@@ -31,19 +31,24 @@ def updateResource(email, resid, res):
     active = activeUser.find_one({'email': email, 'role': 'ADMIN'})
     if active is None:
         return jsonify({'message': 'You are Not allowed'}), 403
+    
     eres = resource.find({'rid': resid})
     if eres is None:
         return jsonify({'message': "Rosource not Found"}), 401
+    
     resource.update_one({'rid': resid}, {'$set': res})
     return jsonify({'message': "Resource has been updated"}), 200
+
 def showResources(email):
     active = activeUser.find_one({'email': email})
     if active is None:
         return jsonify({'message': 'Please Log In First'}), 403
+    
     arr=list(resource.find())
     for r in arr:
         r['_id']=str(r['_id'])
     return jsonify(arr),200
+
 def asignResourceToTask(email,task,resId):
     e_res = resource.find({'rid': resId})
     if e_res is None:

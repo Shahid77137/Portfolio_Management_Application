@@ -1,9 +1,6 @@
 from flask import Flask, jsonify, request
-
 from service.authLog import signUp,logIn,logout,deleteUser,updateUser,readManager
-
 from service.projects import createProject,asignProjectToManager,updateProject,deleteProject,displayProjects,display_single_project
-
 from service.resource import addResource,deleteResouce,updateResource,showResources,asignResourceToTask,show_single_resource
 
 app = Flask(__name__)

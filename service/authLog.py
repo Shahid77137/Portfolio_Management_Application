@@ -20,13 +20,14 @@ def createUser(firstName, lastName, role, about, email, password):
         'password': password
     }
 
-
 def signUp(response):
 
     email = response.get('user')['email']
-    existing_user = user.find_one({'email': email})
-    global userCount
 
+    existing_user = user.find_one({'email': email})
+    
+    global userCount
+    
     if existing_user is not None:
 
         return jsonify({"message": "User with this email already exists"}), 400

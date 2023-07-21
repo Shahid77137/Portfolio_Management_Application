@@ -1,3 +1,4 @@
+
 from models.database import user, activeUser, tasks, projects
 from flask import jsonify
 from datetime import date
@@ -55,6 +56,8 @@ def showTasks(email, projectid):
     for tk in arr:
         tk['_id']=str(tk['_id'])
     return jsonify(arr), 200
+
+
 def show_single_task(email, projectid, taskid):
     project = projects.find_one({"projectId": projectid})
     if project is None:
