@@ -5,6 +5,7 @@ from datetime import date
 if count.find_one({'name':'cc'}) is None:
     count.insert_one({'cc':1,'name':'cc'})
 
+
 def addResource(email, res):
 
     active = activeUser.find_one({'email': email, 'role': 'ADMIN'})
@@ -12,13 +13,13 @@ def addResource(email, res):
         return jsonify({'message': 'You are Not allowed'}), 403
     else:
         cc=count.find_one({'name':'cc'})['cc']
-        resource['rid'] = cc;
+        resource['rid'] = cc
         count.update_one({'name':'cc'},{'$set':{'cc':cc+1}})
         resource.insert_one(res)
     return jsonify(res), 200
 
 
-def deleteResouce(email, resid):
+def deleteResource(email, resid):
     active = activeUser.find_one({'email': email, 'role': 'ADMIN'})
     if active is None:
         return jsonify({'message': 'You are Not allowed'}), 403
@@ -31,23 +32,22 @@ def updateResource(email, resid, res):
     active = activeUser.find_one({'email': email, 'role': 'ADMIN'})
     if active is None:
         return jsonify({'message': 'You are Not allowed'}), 403
-    
     eres = resource.find({'rid': resid})
     if eres is None:
         return jsonify({'message': "Rosource not Found"}), 401
-    
     resource.update_one({'rid': resid}, {'$set': res})
     return jsonify({'message': "Resource has been updated"}), 200
+
 
 def showResources(email):
     active = activeUser.find_one({'email': email})
     if active is None:
         return jsonify({'message': 'Please Log In First'}), 403
-    
     arr=list(resource.find())
     for r in arr:
         r['_id']=str(r['_id'])
     return jsonify(arr),200
+
 
 def asignResourceToTask(email,task,resId):
     e_res = resource.find({'rid': resId})
@@ -64,6 +64,8 @@ def asignResourceToTask(email,task,resId):
     task['resource']=resId
     tasks.update_one({'name': task['name'], 'projectId': existing_project['projectId']},{'$set':task})
     return jsonify({'message':"Resource is assign Successfully"})
+
+
 def show_single_resource(email,rid):
     active = activeUser.find_one({'email': email})
     if active is None:
