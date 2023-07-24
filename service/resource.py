@@ -12,11 +12,11 @@ def addResource(email, res):
     if active is None:
         return jsonify({'message': 'You are Not allowed'}), 403
     else:
-        cc=count.find_one({'name':'cc'})['cc']
-        resource['rid'] = cc
-        count.update_one({'name':'cc'},{'$set':{'cc':cc+1}})
+        cc = count.find_one({'name': 'cc'})['cc']
+        res['rid'] = str(cc)  # Use cc directly as an integer value
+        count.update_one({'name': 'cc'}, {'$set': {'cc': cc + 1}})
         resource.insert_one(res)
-    return jsonify(res), 200
+    return jsonify({'message':"Added Successfully"}), 200
 
 
 def deleteResource(email, resid):
@@ -37,8 +37,6 @@ def updateResource(email, resid, res):
         return jsonify({'message': "Rosource not Found"}), 401
     resource.update_one({'rid': resid}, {'$set': res})
     return jsonify({'message': "Resource has been updated"}), 200
-
-
 def showResources(email):
     active = activeUser.find_one({'email': email})
     if active is None:
@@ -47,8 +45,6 @@ def showResources(email):
     for r in arr:
         r['_id']=str(r['_id'])
     return jsonify(arr),200
-
-
 def asignResourceToTask(email,task,resId):
     e_res = resource.find({'rid': resId})
     if e_res is None:
@@ -64,8 +60,6 @@ def asignResourceToTask(email,task,resId):
     task['resource']=resId
     tasks.update_one({'name': task['name'], 'projectId': existing_project['projectId']},{'$set':task})
     return jsonify({'message':"Resource is assign Successfully"})
-
-
 def show_single_resource(email,rid):
     active = activeUser.find_one({'email': email})
     if active is None:

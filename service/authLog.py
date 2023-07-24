@@ -27,13 +27,13 @@ def signUp(response):
     if existing_user is not None:
         return jsonify({"message": "User with this email already exists"}), 400
 
-    if response.get('user')["role"] == 'ADMIN' and response.get('secretKey') == 'Henry':
+    if response.get('user')["role"] == 'ADMIN' and response.get('secretKey') == 'Jenny':
         obj = response.get('user')
         user.insert_one(
             createUser(obj['firstName'], obj['lastName'], obj['role'], obj['about'], obj['email'], obj['password']))
 
         userCount = userCount + 1
-    elif response.get('user')["role"] == 'ADMIN' and response.get('secretKey') != 'Henry':
+    elif response.get('user')["role"] == 'ADMIN' and response.get('secretKey') != 'Jenny':
         return jsonify({"message": "This secret key is not valid"}), 400
     else:
         obj = response.get('user')
@@ -70,22 +70,20 @@ def logout(email):
 
 
 def deleteUser(email):
-    activeUseri = activeUser.find_one({'email': email})
-    if activeUseri is None:
-        return jsonify({'message': "You have to Log In First"}), 403
-    else:
-        user.delete_one({'email': email})
-        activeUser.delete_one({'email': email})
-        return jsonify({'isDone': True},{'message':'user deleted successfully'}), 200
+
+    existing_user = user.find_one({'email': email})
+    if existing_user is None:
+        return jsonify({'message':"User Not found"}),301
+    user.delete_one({'email': email})
+    activeUser.delete_one({'email': email})
+    return jsonify({'isDone': True}), 200
+
 
 
 def updateUser(email, request):
-    activeUseri = activeUser.find_one({'email': email})
-    if activeUseri is None:
-        return jsonify({'message': "You have to Log In First"}), 403
-    else:
-        user.update_one({'email': email}, {'$set': request})
-        return jsonify(jsonify({'isUpdate': True})), 200
+    user.update_one({'email': email}, {'$set': request})
+    return jsonify({'isUpdate': True}), 200
+
 
 
 def readManager(email):
@@ -96,3 +94,9 @@ def readManager(email):
     for manager in managers:
         manager['_id']=str(manager['_id'])
     return jsonify(managers), 201
+def isAdmin(email):
+    active_User=activeUser.find_one({'email':email,"role":"ADMIN"})
+    if activeUser is None:
+        return jsonify({'message':"I m Admin"}),200
+    else:
+        return jsonify({'message':"I m not Admin"}),201
