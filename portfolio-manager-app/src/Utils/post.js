@@ -1,6 +1,5 @@
 import axios from "axios";
-
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 export let base="https://projectgenie.onrender.com"
 export const login=async (data)=>{
